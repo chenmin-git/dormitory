@@ -1,0 +1,35 @@
+# 后端
+dormitory-backend/target/
+*.class
+uploads/
+
+# 前端
+dormitory-frontend/node_modules/
+dormitory-frontend/dist/
+.playwright-mcp/
+
+# Remotion 演示视频项目依赖
+demo-video/node_modules/
+demo-video/dist/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# 系统
+.DS_Store
+*.log
+/*.png
+
+# 本地配置与密钥
+.env
+.env.*
+!.env.example
+*.local
+
+# 演示视频中间产物
+demo-video/out/
+demo-video/.cache/
+docs/demo-frames/
+docs/tmp/

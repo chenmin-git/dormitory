@@ -1,0 +1,74 @@
+[
+  {
+    "id": "login",
+    "title": "三角色宿舍管理入口",
+    "subtitle": "学生、宿管、管理员共用统一登录，按角色进入不同菜单。",
+    "screenshot": "01-login.png",
+    "duration": 4,
+    "accent": "#157166",
+    "bullets": ["测试账号一键填充", "JWT 登录态", "角色菜单隔离"]
+  },
+  {
+    "id": "dashboard",
+    "title": "基础功能一屏总览",
+    "subtitle": "宿舍、公告、卫生、报修和请假在学生工作台集中呈现。",
+    "screenshot": "02-student-dashboard.png",
+    "duration": 4,
+    "accent": "#4f7d9d",
+    "bullets": ["楼栋床位数据", "待办状态", "业务入口清晰"]
+  },
+  {
+    "id": "ai-actions",
+    "title": "AI 对话直接办理业务",
+    "subtitle": "自然语言提交报修和请假，信息不足时只追问，不会乱提交。",
+    "screenshot": "04a-ai-repair-leave.png",
+    "duration": 6,
+    "accent": "#bd6f32",
+    "bullets": ["窗户关不上 -> 门窗 / 紧急", "6月20日8点到20点 -> 自动解析", "我想请假 -> 追问起止时间"]
+  },
+  {
+    "id": "ai-queries",
+    "title": "我的数据随问随查",
+    "subtitle": "报修进度、住宿位置、请假记录都能用一句话查询。",
+    "screenshot": "04c-ai-queries.png",
+    "duration": 5,
+    "accent": "#6b7c3c",
+    "bullets": ["查我的报修", "我住哪", "我的请假记录"]
+  },
+  {
+    "id": "faq",
+    "title": "FAQ 知识兜底问答",
+    "subtitle": "宿舍能否使用电磁炉会回退到知识库，给出明确安全提示。",
+    "screenshot": "04b-ai-query-faq.png",
+    "duration": 5,
+    "accent": "#8b5f9f",
+    "bullets": ["知识库优先", "外部 AI 不可用也能答", "规章回答友好可读"]
+  },
+  {
+    "id": "records",
+    "title": "业务结果落入管理页面",
+    "subtitle": "AI 不是聊天玩具，提交后会生成真实报修单和请假单。",
+    "screenshot": "05-repair-records.png",
+    "duration": 4,
+    "accent": "#1f7a8c",
+    "bullets": ["报修列表可追踪", "AI 分类可筛查", "宿管可派单处理"]
+  },
+  {
+    "id": "leave",
+    "title": "请假审批闭环",
+    "subtitle": "申请进入待审批状态，宿管端可审批通过或驳回。",
+    "screenshot": "06-leave-records.png",
+    "duration": 4,
+    "accent": "#a56448",
+    "bullets": ["起止时间标准化", "状态清晰", "历史可查"]
+  },
+  {
+    "id": "profile",
+    "title": "开源可演示、可复测",
+    "subtitle": "演示脚本、截图和视频素材都放在仓库中，便于答辩和二次开发。",
+    "screenshot": "07-profile.png",
+    "duration": 4,
+    "accent": "#157166",
+    "bullets": ["smoke 脚本覆盖 AI 场景", "README 记录启动方式", "GitHub / Gitee 双平台发布"]
+  }
+]
