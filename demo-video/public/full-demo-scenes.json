@@ -1,74 +1,152 @@
 [
   {
     "id": "login",
-    "title": "三角色宿舍管理入口",
-    "subtitle": "学生、宿管、管理员共用统一登录，按角色进入不同菜单。",
+    "title": "三角色统一入口",
+    "subtitle": "学生、宿管、管理员共用一套登录页，按角色进入不同菜单。",
     "screenshot": "01-login.png",
     "duration": 4,
     "accent": "#157166",
-    "bullets": ["测试账号一键填充", "JWT 登录态", "角色菜单隔离"]
+    "kicker": "登录与权限",
+    "bullets": ["测试账号快速填充", "JWT 登录态", "角色菜单自动隔离"]
   },
   {
     "id": "dashboard",
-    "title": "基础功能一屏总览",
-    "subtitle": "宿舍、公告、卫生、报修和请假在学生工作台集中呈现。",
+    "title": "学生工作台总览",
+    "subtitle": "公告、卫生、报修、请假和住宿信息集中在日常入口。",
     "screenshot": "02-student-dashboard.png",
     "duration": 4,
     "accent": "#4f7d9d",
-    "bullets": ["楼栋床位数据", "待办状态", "业务入口清晰"]
+    "kicker": "基础功能",
+    "bullets": ["宿舍信息清晰", "待办状态可见", "常用入口集中"]
   },
   {
     "id": "ai-actions",
-    "title": "AI 对话直接办理业务",
-    "subtitle": "自然语言提交报修和请假，信息不足时只追问，不会乱提交。",
+    "title": "一句话提交报修和请假",
+    "subtitle": "自然语言直接触发业务，不再让学生在多个表单里来回找字段。",
     "screenshot": "04a-ai-repair-leave.png",
-    "duration": 6,
+    "duration": 4,
     "accent": "#bd6f32",
-    "bullets": ["窗户关不上 -> 门窗 / 紧急", "6月20日8点到20点 -> 自动解析", "我想请假 -> 追问起止时间"]
+    "kicker": "AI 办理",
+    "bullets": ["窗户关不上 -> 门窗 / 紧急", "6月20日8点到20点 -> 自动解析", "提交后生成真实业务单"]
+  },
+  {
+    "id": "ai-guardrails",
+    "title": "信息不全先追问",
+    "subtitle": "用户只说“我想请假”时，系统会追问起止时间，不会乱提交。",
+    "screenshot": "04a-ai-repair-leave.png",
+    "duration": 4,
+    "accent": "#8a6f24",
+    "kicker": "AI 安全边界",
+    "bullets": ["缺少时间不落单", "给出标准示例", "业务动作有兜底"]
   },
   {
     "id": "ai-queries",
-    "title": "我的数据随问随查",
-    "subtitle": "报修进度、住宿位置、请假记录都能用一句话查询。",
+    "title": "个人数据随问随查",
+    "subtitle": "报修、住宿位置、请假记录都能通过对话友好返回。",
     "screenshot": "04c-ai-queries.png",
-    "duration": 5,
+    "duration": 4,
     "accent": "#6b7c3c",
+    "kicker": "AI 查询",
     "bullets": ["查我的报修", "我住哪", "我的请假记录"]
   },
   {
-    "id": "faq",
+    "id": "faq-answer",
     "title": "FAQ 知识兜底问答",
     "subtitle": "宿舍能否使用电磁炉会回退到知识库，给出明确安全提示。",
     "screenshot": "04b-ai-query-faq.png",
-    "duration": 5,
+    "duration": 4,
     "accent": "#8b5f9f",
-    "bullets": ["知识库优先", "外部 AI 不可用也能答", "规章回答友好可读"]
+    "kicker": "普通问答",
+    "bullets": ["FAQ 优先回答", "外部 AI 不可用也能答", "规章提示友好可读"]
   },
   {
-    "id": "records",
-    "title": "业务结果落入管理页面",
-    "subtitle": "AI 不是聊天玩具，提交后会生成真实报修单和请假单。",
+    "id": "repair-records",
+    "title": "报修结果进入列表",
+    "subtitle": "AI 提交的报修单会落到报修管理中，分类、优先级、状态都可追踪。",
     "screenshot": "05-repair-records.png",
     "duration": 4,
     "accent": "#1f7a8c",
-    "bullets": ["报修列表可追踪", "AI 分类可筛查", "宿管可派单处理"]
+    "kicker": "报修闭环",
+    "bullets": ["AI 分类可筛查", "紧急优先处理", "宿管可派单"]
   },
   {
-    "id": "leave",
-    "title": "请假审批闭环",
-    "subtitle": "申请进入待审批状态，宿管端可审批通过或驳回。",
+    "id": "leave-records",
+    "title": "请假申请可审批",
+    "subtitle": "AI 解析出的起止时间会标准化写入请假记录，等待宿管审批。",
     "screenshot": "06-leave-records.png",
     "duration": 4,
     "accent": "#a56448",
-    "bullets": ["起止时间标准化", "状态清晰", "历史可查"]
+    "kicker": "请假闭环",
+    "bullets": ["起止时间标准化", "待审批状态明确", "历史记录可查"]
   },
   {
-    "id": "profile",
-    "title": "开源可演示、可复测",
-    "subtitle": "演示脚本、截图和视频素材都放在仓库中，便于答辩和二次开发。",
-    "screenshot": "07-profile.png",
+    "id": "admin-report",
+    "title": "管理端 AI 数据报告",
+    "subtitle": "管理员一键生成住宿、报修、请假、卫生的综合分析建议。",
+    "screenshot": "08-admin-ai-report.png",
     "duration": 4,
-    "accent": "#157166",
-    "bullets": ["smoke 脚本覆盖 AI 场景", "README 记录启动方式", "GitHub / Gitee 双平台发布"]
+    "accent": "#d06b3d",
+    "kicker": "AI 分析",
+    "bullets": ["统计指标自动汇总", "生成管理建议", "历史报告可回看"]
+  },
+  {
+    "id": "users",
+    "title": "用户与角色维护",
+    "subtitle": "管理员可以新增账号、分配角色、维护状态和重置默认密码。",
+    "screenshot": "09-admin-user-dialog.png",
+    "duration": 4,
+    "accent": "#7a5ea8",
+    "kicker": "系统管理",
+    "bullets": ["管理员 / 宿管 / 学生", "账号状态管理", "新增默认密码"]
+  },
+  {
+    "id": "rooms",
+    "title": "房间床位与入住分配",
+    "subtitle": "房间、床位、入住学生在一个抽屉中管理，空床可直接分配。",
+    "screenshot": "10-admin-room-beds.png",
+    "duration": 4,
+    "accent": "#2a7f6f",
+    "kicker": "宿舍资源",
+    "bullets": ["楼栋房间筛选", "床位状态可视", "入住 / 退宿操作"]
+  },
+  {
+    "id": "repair-dispatch",
+    "title": "宿管派单处理报修",
+    "subtitle": "宿管端可以把待派单工单分配给处理人，并继续推进维修状态。",
+    "screenshot": "11-manager-repair-dispatch.png",
+    "duration": 4,
+    "accent": "#0f766e",
+    "kicker": "宿管处理",
+    "bullets": ["待派单集中处理", "选择宿管执行", "状态流转清晰"]
+  },
+  {
+    "id": "leave-approval",
+    "title": "请假审批有意见留痕",
+    "subtitle": "通过或驳回都能填写审批意见，学生端可查看结果。",
+    "screenshot": "12-manager-leave-approval.png",
+    "duration": 4,
+    "accent": "#3d6e9e",
+    "kicker": "审批流程",
+    "bullets": ["通过 / 驳回", "审批意见记录", "请假晚归统一管理"]
+  },
+  {
+    "id": "faq-admin",
+    "title": "FAQ 知识库可维护",
+    "subtitle": "管理员维护常见问题，AI 问答会把知识库作为上下文使用。",
+    "screenshot": "13-admin-faq-dialog.png",
+    "duration": 4,
+    "accent": "#96619f",
+    "kicker": "知识管理",
+    "bullets": ["问题答案分类", "提升问答准确度", "支持编辑删除"]
+  },
+  {
+    "id": "daily-ops",
+    "title": "公告与卫生日常运营",
+    "subtitle": "宿管可以发布公告、登记卫生检查，覆盖宿舍管理的日常工作。",
+    "screenshot": "15-manager-hygiene-dialog.png",
+    "duration": 4,
+    "accent": "#6f7c37",
+    "kicker": "日常运营",
+    "bullets": ["公告通知", "卫生评分", "检查日期留档"]
   }
 ]

@@ -1,10 +1,107 @@
-{
-  "login": "登录与角色",
-  "dashboard": "基础模块",
-  "ai-actions": "AI 办理",
-  "ai-queries": "AI 查询",
-  "faq": "FAQ 问答",
-  "records": "报修记录",
-  "leave": "请假记录",
-  "profile": "发布准备"
-}
+[
+  {
+    "text": "统一入口支持学生、宿管、管理员三种角色，登录后自动进入对应功能。",
+    "startMs": 0,
+    "endMs": 4000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "学生端先看到住宿、公告、卫生、报修和请假的日常工作台。",
+    "startMs": 4000,
+    "endMs": 8000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "说“宿舍窗户关不上了”，AI 自动提交报修，并判定门窗、紧急。",
+    "startMs": 8000,
+    "endMs": 12000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "只说“我想请假”时，系统会先追问开始和结束时间，不会乱提交。",
+    "startMs": 12000,
+    "endMs": 16000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "报修进度、住宿位置、请假记录，都可以用一句话友好查询。",
+    "startMs": 16000,
+    "endMs": 20000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "问电磁炉这类普通问题，会回退到 FAQ 知识库给出安全提示。",
+    "startMs": 20000,
+    "endMs": 24000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "AI 办理不是停留在聊天里，报修单会真实进入报修管理列表。",
+    "startMs": 24000,
+    "endMs": 28000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "请假申请同样落到记录页，时间标准化，状态等待审批。",
+    "startMs": 28000,
+    "endMs": 32000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "管理端还能一键生成 AI 数据报告，汇总入住、报修、请假和卫生。",
+    "startMs": 32000,
+    "endMs": 36000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "用户管理覆盖账号、姓名、角色、状态和默认密码维护。",
+    "startMs": 36000,
+    "endMs": 40000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "房间床位以抽屉方式展示，已住、空闲、分配、退宿一眼清楚。",
+    "startMs": 40000,
+    "endMs": 44000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "宿管端可以把待派单报修分配给处理人，继续推进维修流程。",
+    "startMs": 44000,
+    "endMs": 48000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "请假审批支持通过、驳回和审批意见，流程可追溯。",
+    "startMs": 48000,
+    "endMs": 52000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "FAQ 知识库可以持续维护，成为 AI 问答的可靠上下文。",
+    "startMs": 52000,
+    "endMs": 56000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "公告通知、卫生检查和核心流程一起，构成完整的宿舍管理演示。",
+    "startMs": 56000,
+    "endMs": 60000,
+    "timestampMs": null,
+    "confidence": null
+  }
+]

@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@remotion/captions": "4.0.474",
     "@remotion/cli": "4.0.474",
     "react": "19.2.3",
     "react-dom": "19.2.3",
