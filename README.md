@@ -22,6 +22,13 @@
 
 AI 调用优先走讯飞星火 OpenAI 兼容接口；当 `SPARK_API_PASSWORD` 未配置、额度不足或网络异常时，系统会使用本地规则和 FAQ 兜底，保证报修、请假、查询等核心流程仍可演示和复测。
 
+### 答辩展示亮点
+
+- AI 助手会把“识别意图、提取字段、执行业务、下一步状态”展示为结果卡片，方便演示 Agent 办理闭环。
+- 报修和请假/晚归支持详情弹窗与流程时间线，可直观看到提交、派单/审批、完成/结果。
+- 数据看板增加 AI 对话次数、AI 分类工单、紧急工单识别、智能请假办理等指标。
+- FAQ 知识库同时作为学生宿舍指南和 AI 问答上下文，支持搜索与分类查看。
+
 ## 技术栈
 
 | 层 | 技术 |
@@ -187,6 +194,14 @@ node scripts/smoke-ai-flow.mjs
 ```
 
 该脚本会验证自动报修、完整请假、不完整请假追问、本人数据查询和 FAQ 问答。
+
+重置演示数据：
+
+```bash
+bash scripts/reset-demo-data.sh
+```
+
+默认使用 `localhost:3306`、`root/root` 导入 `dormitory-backend/src/main/resources/db/dormitory.sql`，也可以用 `DB_HOST`、`DB_PORT`、`DB_USERNAME`、`DB_PASSWORD` 覆盖。
 
 Remotion 演示视频：
 

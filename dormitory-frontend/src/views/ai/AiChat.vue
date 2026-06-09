@@ -17,7 +17,30 @@
           <el-icon v-if="msg.role === 'assistant'"><MagicStick /></el-icon>
           <el-icon v-else><User /></el-icon>
         </div>
-        <div class="bubble" v-if="msg.role === 'assistant'" v-html="render(msg.content)"></div>
+        <div v-if="msg.role === 'assistant'" class="assistant-stack">
+          <div v-if="actionInfo(msg.content)" class="action-card">
+            <div class="action-top">
+              <div>
+                <span class="action-kicker">{{ actionLabel(actionInfo(msg.content).TYPE) }}</span>
+                <div class="action-title">{{ actionInfo(msg.content).TITLE || 'AI 已识别业务意图' }}</div>
+              </div>
+              <el-tag :type="statusTag(actionInfo(msg.content).STATUS)" effect="plain">
+                {{ actionInfo(msg.content).STATUS || '处理中' }}
+              </el-tag>
+            </div>
+            <div class="action-summary">{{ actionInfo(msg.content).SUMMARY }}</div>
+            <div class="action-grid">
+              <div v-for="item in actionItems(actionInfo(msg.content))" :key="item.label" class="action-item">
+                <span>{{ item.label }}</span>
+                <strong>{{ item.value }}</strong>
+              </div>
+            </div>
+            <div v-if="actionInfo(msg.content).NEXT" class="action-next">
+              下一步：{{ actionInfo(msg.content).NEXT }}
+            </div>
+          </div>
+          <div class="bubble" v-html="render(stripAction(msg.content))"></div>
+        </div>
         <div class="bubble" v-else>{{ msg.content }}</div>
       </div>
       <div v-if="loading" class="row assistant">
@@ -51,6 +74,7 @@ import { useUserStore } from '@/store/user'
 const userStore = useUserStore()
 marked.setOptions({ breaks: true })
 const render = (t) => marked.parse(t || '')
+const ACTION_RE = /@@AI_ACTION\n([\s\S]*?)@@END_AI_ACTION\n?/m
 
 const bodyRef = ref()
 const input = ref('')
@@ -67,6 +91,47 @@ const scrollBottom = () => {
   nextTick(() => {
     if (bodyRef.value) bodyRef.value.scrollTop = bodyRef.value.scrollHeight
   })
+}
+
+const actionInfo = (content) => {
+  const match = (content || '').match(ACTION_RE)
+  if (!match) return null
+  const data = {}
+  match[1].split('\n').forEach((line) => {
+    const idx = line.indexOf('=')
+    if (idx > 0) data[line.slice(0, idx)] = line.slice(idx + 1)
+  })
+  return data
+}
+
+const stripAction = (content) => (content || '').replace(ACTION_RE, '').trim()
+
+const actionLabel = (type) => ({
+  REPAIR_SUBMITTED: 'AI 报修 Agent',
+  LEAVE_SUBMITTED: 'AI 请假 Agent',
+  NEED_MORE_INFO: 'AI 信息校验'
+}[type] || 'AI 办理结果')
+
+const statusTag = (status) => ({
+  待派单: 'warning',
+  待审批: 'warning',
+  等待补充: 'info',
+  已完成: 'success',
+  通过: 'success',
+  驳回: 'danger'
+}[status] || 'primary')
+
+const actionItems = (data) => {
+  if (!data) return []
+  const labels = {
+    CATEGORY: 'AI 分类',
+    PRIORITY: 'AI 优先级',
+    START: '开始时间',
+    END: '结束时间'
+  }
+  return ['CATEGORY', 'PRIORITY', 'START', 'END']
+    .filter((key) => data[key])
+    .map((key) => ({ label: labels[key], value: data[key] }))
 }
 
 const onEnter = (e) => {
@@ -203,6 +268,78 @@ onMounted(loadHistory)
   max-width: 75%;
   white-space: pre-wrap;
   word-break: break-word;
+}
+.assistant-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 75%;
+}
+.assistant-stack .bubble {
+  max-width: 100%;
+}
+.action-card {
+  width: min(560px, 100%);
+  padding: 14px;
+  border: 1px solid var(--primary-100);
+  background:
+    linear-gradient(135deg, rgba(21, 103, 96, 0.08), rgba(194, 104, 58, 0.06)),
+    #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(34, 45, 39, 0.06);
+}
+.action-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.action-kicker {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+.action-title {
+  margin-top: 3px;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 16px;
+}
+.action-summary {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.action-item {
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(21, 103, 96, 0.12);
+}
+.action-item span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.action-item strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink);
+  font-size: 14px;
+}
+.action-next {
+  margin-top: 12px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: var(--primary);
+  background: var(--primary-050);
+  font-size: 13px;
 }
 .row.assistant .bubble {
   background: #fff;

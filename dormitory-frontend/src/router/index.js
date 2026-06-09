@@ -82,7 +82,7 @@ const routes = [
         path: 'faq',
         name: 'Faq',
         component: () => import('@/views/faq/Faq.vue'),
-        meta: { title: 'FAQ知识库', icon: 'ChatLineSquare', roles: [ADMIN] }
+        meta: { title: '宿舍指南', icon: 'ChatLineSquare', roles: [ADMIN, MANAGER, STUDENT] }
       },
       {
         path: 'profile',

@@ -25,6 +25,7 @@ public class StatServiceImpl implements StatService {
     private final LeaveRecordMapper leaveRecordMapper;
     private final HygieneCheckMapper hygieneCheckMapper;
     private final BuildingMapper buildingMapper;
+    private final AiChatLogMapper aiChatLogMapper;
 
     @Override
     public Map<String, Object> overview() {
@@ -75,6 +76,19 @@ public class StatServiceImpl implements StatService {
                 Wrappers.<LeaveRecord>lambdaQuery().eq(LeaveRecord::getType, "晚归"));
         result.put("leaveCount", leaveCount);
         result.put("lateCount", lateCount);
+
+        long aiChatCount = aiChatLogMapper.selectCount(null);
+        long aiRepairCount = repairMapper.selectCount(
+                Wrappers.<Repair>lambdaQuery().isNotNull(Repair::getAiCategory));
+        long urgentRepairCount = repairMapper.selectCount(
+                Wrappers.<Repair>lambdaQuery().eq(Repair::getAiPriority, "紧急"));
+        long aiLeaveCount = aiChatLogMapper.selectCount(
+                Wrappers.<AiChatLog>lambdaQuery().like(AiChatLog::getAnswer, "TYPE=LEAVE_SUBMITTED"));
+
+        result.put("aiChatCount", aiChatCount);
+        result.put("aiRepairCount", aiRepairCount);
+        result.put("urgentRepairCount", urgentRepairCount);
+        result.put("aiLeaveCount", aiLeaveCount);
 
         return result;
     }

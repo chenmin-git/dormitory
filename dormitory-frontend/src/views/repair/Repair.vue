@@ -11,7 +11,7 @@
       <el-button v-if="isStudent" type="success" @click="submitDialog = true">我要报修</el-button>
     </div>
 
-    <el-table :data="list" border stripe v-loading="loading">
+    <el-table :data="list" border stripe v-loading="loading" @row-dblclick="openDetail">
       <el-table-column type="index" label="#" width="55" />
       <el-table-column prop="title" label="标题" />
       <el-table-column v-if="!isStudent" prop="studentName" label="报修人" width="100" />
@@ -33,6 +33,11 @@
       </el-table-column>
       <el-table-column v-if="!isStudent" prop="handlerName" label="处理人" width="100" />
       <el-table-column prop="create_time" label="提交时间" width="160" />
+      <el-table-column label="详情" width="80" fixed="right">
+        <template #default="{ row }">
+          <el-button size="small" link type="primary" @click="openDetail(row)">查看</el-button>
+        </template>
+      </el-table-column>
       <el-table-column v-if="!isStudent" label="操作" width="200">
         <template #default="{ row }">
           <el-button v-if="row.status === '待派单'" size="small" type="primary" @click="openAssign(row)">派单</el-button>
@@ -63,6 +68,51 @@
         <el-button @click="submitDialog = false">取消</el-button>
         <el-button type="primary" :loading="submitting" @click="submitRepair">提交</el-button>
       </template>
+    </el-dialog>
+
+    <!-- 工单详情 -->
+    <el-dialog v-model="detailDialog" title="报修处理详情" width="660px">
+      <div v-if="detailRow" class="detail-panel">
+        <div class="detail-hero">
+          <div>
+            <div class="detail-kicker">工单 #{{ detailRow.id }}</div>
+            <h3>{{ detailRow.title }}</h3>
+            <p>{{ detailRow.description || '暂无描述' }}</p>
+          </div>
+          <el-tag :type="statusType(detailRow.status)" size="large">{{ detailRow.status }}</el-tag>
+        </div>
+
+        <div class="ai-proof">
+          <div>
+            <span>AI 分类</span>
+            <strong>{{ detailRow.ai_category || '-' }}</strong>
+          </div>
+          <div>
+            <span>AI 优先级</span>
+            <strong>{{ detailRow.ai_priority || '-' }}</strong>
+          </div>
+          <div>
+            <span>房间</span>
+            <strong>{{ detailRow.roomNo || '-' }}</strong>
+          </div>
+        </div>
+
+        <el-steps :active="repairStep(detailRow.status)" finish-status="success" align-center>
+          <el-step title="提交报修" :description="detailRow.create_time || '-'" />
+          <el-step title="宿管派单" :description="detailRow.handlerName || '待派单'" />
+          <el-step title="维修完成" :description="detailRow.finish_time || '待完成'" />
+        </el-steps>
+
+        <el-descriptions :column="2" border class="detail-desc">
+          <el-descriptions-item label="报修人">{{ detailRow.studentName || '本人' }}</el-descriptions-item>
+          <el-descriptions-item label="学号">{{ detailRow.studentNo || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="处理人">{{ detailRow.handlerName || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="完成时间">{{ detailRow.finish_time || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="处理备注" :span="2">
+            {{ detailRow.handle_remark || '暂无处理备注' }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
     </el-dialog>
 
     <!-- 派单 -->
@@ -120,9 +170,12 @@ const currentRow = ref(null)
 
 const finishDialog = ref(false)
 const finishRemark = ref('')
+const detailDialog = ref(false)
+const detailRow = ref(null)
 
 const priorityType = (p) => ({ 紧急: 'danger', 一般: 'warning', 低: 'info' }[p] || 'info')
 const statusType = (s) => ({ 待派单: 'info', 维修中: 'warning', 已完成: 'success' }[s])
+const repairStep = (s) => ({ 待派单: 1, 维修中: 2, 已完成: 3 }[s] || 1)
 
 const loadData = async () => {
   loading.value = true
@@ -192,6 +245,11 @@ const remove = (row) => {
   })
 }
 
+const openDetail = (row) => {
+  detailRow.value = row
+  detailDialog.value = true
+}
+
 onMounted(loadData)
 </script>
 
@@ -204,5 +262,59 @@ onMounted(loadData)
 .pager {
   margin-top: 16px;
   justify-content: flex-end;
+}
+.detail-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.detail-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary-050), #fff7ef);
+  border: 1px solid var(--line);
+}
+.detail-kicker {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+.detail-hero h3 {
+  margin: 6px 0 8px;
+  color: var(--ink);
+  font-size: 20px;
+}
+.detail-hero p {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.ai-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.ai-proof div {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-soft);
+}
+.ai-proof span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.ai-proof strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--ink);
+  font-size: 16px;
+}
+.detail-desc {
+  margin-top: 2px;
 }
 </style>

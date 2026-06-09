@@ -15,6 +15,19 @@
       </el-col>
     </el-row>
 
+    <div class="ai-metrics">
+      <div v-for="metric in aiMetrics" :key="metric.label" class="ai-metric">
+        <div class="ai-metric-icon" :style="{ color: metric.color, background: metric.soft }">
+          <el-icon :size="22"><component :is="metric.icon" /></el-icon>
+        </div>
+        <div>
+          <div class="ai-metric-value display-font">{{ metric.value }}</div>
+          <div class="ai-metric-label">{{ metric.label }}</div>
+        </div>
+        <span>{{ metric.note }}</span>
+      </div>
+    </div>
+
     <!-- AI 数据分析报告 -->
     <el-card class="ai-report" shadow="hover">
       <template #header>
@@ -26,6 +39,8 @@
           </span>
           <div class="report-actions">
             <el-button size="small" :icon="Clock" @click="openHistory">历史记录</el-button>
+            <el-button size="small" :icon="DocumentCopy" :disabled="!report" @click="copyReport">复制</el-button>
+            <el-button size="small" :icon="Download" :disabled="!report" @click="downloadReport">导出</el-button>
             <el-button type="primary" size="small" :loading="reportLoading" @click="loadReport">
               {{ report ? '重新生成' : '生成报告' }}
             </el-button>
@@ -83,7 +98,7 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { marked } from 'marked'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { MagicStick, Clock, Calendar } from '@element-plus/icons-vue'
+import { MagicStick, Clock, Calendar, DocumentCopy, Download } from '@element-plus/icons-vue'
 import { statApi, aiApi } from '@/api'
 
 // 主题配色（与全局 theme.css 呼应）
@@ -93,6 +108,7 @@ marked.setOptions({ breaks: true })
 const renderMd = (text) => marked.parse(text || '')
 
 const cards = ref([])
+const aiMetrics = ref([])
 const report = ref('')
 const reportLoading = ref(false)
 const pieRef = ref()
@@ -112,6 +128,12 @@ const loadOverview = async () => {
     { label: '入住率', value: data.occupancyRate + '%', icon: 'House', color: '#c2683a', soft: '#f6e7dd' },
     { label: '待处理报修', value: data.pendingRepair, icon: 'Tools', color: '#a8791f', soft: '#f3ead2' },
     { label: '待审批请假', value: data.pendingLeave, icon: 'Calendar', color: '#4a6e84', soft: '#e2eaf0' }
+  ]
+  aiMetrics.value = [
+    { label: 'AI 对话次数', value: data.aiChatCount || 0, note: '问答与业务办理留痕', icon: 'ChatDotRound', color: '#156760', soft: '#e3eeec' },
+    { label: 'AI 分类工单', value: data.aiRepairCount || 0, note: '报修自动判类', icon: 'MagicStick', color: '#c2683a', soft: '#f6e7dd' },
+    { label: '紧急工单识别', value: data.urgentRepairCount || 0, note: '优先处理安全隐患', icon: 'Warning', color: '#b74935', soft: '#fae5df' },
+    { label: '智能请假办理', value: data.aiLeaveCount || 0, note: '自然语言生成申请', icon: 'Tickets', color: '#4a6e84', soft: '#e2eaf0' }
   ]
   await nextTick()
   renderPie(data.repairByCategory || [])
@@ -195,6 +217,27 @@ const removeHistory = (id) => {
   })
 }
 
+const copyReport = async () => {
+  if (!report.value) return
+  try {
+    await navigator.clipboard.writeText(report.value)
+    ElMessage.success('报告内容已复制')
+  } catch (e) {
+    ElMessage.warning('浏览器暂不支持自动复制')
+  }
+}
+
+const downloadReport = () => {
+  if (!report.value) return
+  const blob = new Blob([report.value], { type: 'text/markdown;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = '宿舍管理AI数据分析报告.md'
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 onMounted(loadOverview)
 </script>
 
@@ -222,6 +265,50 @@ onMounted(loadOverview)
   color: var(--muted);
   font-size: 13px;
   margin-top: 2px;
+}
+.ai-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.ai-metric {
+  position: relative;
+  min-height: 104px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(250, 248, 242, 0.94));
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.ai-metric-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ai-metric-value {
+  color: var(--ink);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+}
+.ai-metric-label {
+  margin-top: 5px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+}
+.ai-metric span {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 12px;
 }
 .ai-report {
   margin-top: 16px;

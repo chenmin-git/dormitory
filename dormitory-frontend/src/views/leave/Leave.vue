@@ -11,7 +11,7 @@
       <el-button v-if="isStudent" type="success" @click="submitDialog = true">发起申请</el-button>
     </div>
 
-    <el-table :data="list" border stripe v-loading="loading">
+    <el-table :data="list" border stripe v-loading="loading" @row-dblclick="openDetail">
       <el-table-column type="index" label="#" width="55" />
       <el-table-column v-if="!isStudent" prop="studentName" label="学生" width="100" />
       <el-table-column prop="type" label="类型" width="80">
@@ -25,6 +25,11 @@
       <el-table-column label="状态" width="90">
         <template #default="{ row }">
           <el-tag :type="statusType(row.status)">{{ row.status }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="详情" width="80" fixed="right">
+        <template #default="{ row }">
+          <el-button size="small" link type="primary" @click="openDetail(row)">查看</el-button>
         </template>
       </el-table-column>
       <el-table-column v-if="!isStudent" label="操作" width="170">
@@ -67,6 +72,39 @@
         <el-button type="primary" @click="submit">提交</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="detailDialog" title="申请审批详情" width="640px">
+      <div v-if="detailRow" class="detail-panel">
+        <div class="detail-hero">
+          <div>
+            <div class="detail-kicker">{{ detailRow.type }}申请 #{{ detailRow.id }}</div>
+            <h3>{{ detailRow.reason || '个人事由' }}</h3>
+            <p>{{ detailRow.start_time }} 至 {{ detailRow.end_time }}</p>
+          </div>
+          <el-tag :type="statusType(detailRow.status)" size="large">{{ detailRow.status }}</el-tag>
+        </div>
+
+        <el-steps :active="leaveStep(detailRow.status)" :process-status="detailRow.status === '驳回' ? 'error' : 'process'"
+                  finish-status="success" align-center>
+          <el-step title="提交申请" :description="detailRow.create_time || '-'" />
+          <el-step title="宿管审批" :description="detailRow.approverName || '待审批'" />
+          <el-step :title="detailRow.status === '驳回' ? '审批驳回' : '审批通过'"
+                   :description="detailRow.status === '待审批' ? '等待结果' : detailRow.status" />
+        </el-steps>
+
+        <el-descriptions :column="2" border class="detail-desc">
+          <el-descriptions-item label="学生">{{ detailRow.studentName || '本人' }}</el-descriptions-item>
+          <el-descriptions-item label="学号">{{ detailRow.studentNo || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="类型">{{ detailRow.type }}</el-descriptions-item>
+          <el-descriptions-item label="审批人">{{ detailRow.approverName || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="开始时间">{{ detailRow.start_time }}</el-descriptions-item>
+          <el-descriptions-item label="结束时间">{{ detailRow.end_time }}</el-descriptions-item>
+          <el-descriptions-item label="审批意见" :span="2">
+            {{ detailRow.approve_remark || '暂无审批意见' }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -86,8 +124,11 @@ const query = reactive({ pageNum: 1, pageSize: 10, status: '' })
 
 const submitDialog = ref(false)
 const form = reactive({ type: '请假', reason: '', startTime: '', endTime: '' })
+const detailDialog = ref(false)
+const detailRow = ref(null)
 
 const statusType = (s) => ({ 待审批: 'info', 通过: 'success', 驳回: 'danger' }[s])
+const leaveStep = (s) => ({ 待审批: 1, 通过: 3, 驳回: 3 }[s] || 1)
 
 const loadData = async () => {
   loading.value = true
@@ -123,6 +164,11 @@ const approve = (row, pass) => {
     .catch(() => {})
 }
 
+const openDetail = (row) => {
+  detailRow.value = row
+  detailDialog.value = true
+}
+
 onMounted(loadData)
 </script>
 
@@ -135,5 +181,36 @@ onMounted(loadData)
 .pager {
   margin-top: 16px;
   justify-content: flex-end;
+}
+.detail-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.detail-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary-050), #fff7ef);
+  border: 1px solid var(--line);
+}
+.detail-kicker {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+.detail-hero h3 {
+  margin: 6px 0 8px;
+  color: var(--ink);
+  font-size: 20px;
+}
+.detail-hero p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.detail-desc {
+  margin-top: 2px;
 }
 </style>

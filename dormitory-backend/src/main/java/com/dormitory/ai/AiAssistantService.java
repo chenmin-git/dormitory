@@ -246,7 +246,14 @@ public class AiAssistantService {
         repair.setTitle(title);
         repair.setDescription(desc);
         repairService.submit(userId, repair); // 内部自动关联房间 + AI 分类
-        return "✅ 已为你提交报修：「" + title + "」\n"
+        return actionMeta("REPAIR_SUBMITTED",
+                "TITLE", "报修工单已生成",
+                "SUMMARY", title,
+                "CATEGORY", repair.getAiCategory(),
+                "PRIORITY", repair.getAiPriority(),
+                "STATUS", "待派单",
+                "NEXT", "宿管派单后可在报修管理查看进度")
+                + "✅ 已为你提交报修：「" + title + "」\n"
                 + "AI 判定 —— 类别【" + repair.getAiCategory() + "】 · 优先级【" + repair.getAiPriority() + "】\n"
                 + "当前状态：待派单，宿管会尽快处理，你可以在「报修管理」中查看进度。";
     }
@@ -272,7 +279,12 @@ public class AiAssistantService {
         LocalDateTime start = parse(startStr);
         LocalDateTime end = parse(endStr);
         if (start == null || end == null) {
-            return "好的，为你办理" + type + "。还需要你告诉我【开始时间】和【结束时间】，"
+            return actionMeta("NEED_MORE_INFO",
+                    "TITLE", "还需要补充时间",
+                    "SUMMARY", type + "申请信息不完整",
+                    "STATUS", "等待补充",
+                    "NEXT", "告诉我开始时间和结束时间后再提交")
+                    + "好的，为你办理" + type + "。还需要你告诉我【开始时间】和【结束时间】，"
                     + "例如：「请假，6月10日8:00 到 6月10日18:00，回家办事」。";
         }
         LeaveRecord record = new LeaveRecord();
@@ -281,7 +293,14 @@ public class AiAssistantService {
         record.setStartTime(start);
         record.setEndTime(end);
         leaveService.submit(userId, record);
-        return "✅ 已为你提交" + type + "申请：\n"
+        return actionMeta("LEAVE_SUBMITTED",
+                "TITLE", type + "申请已提交",
+                "SUMMARY", reason,
+                "START", start.format(DTF),
+                "END", end.format(DTF),
+                "STATUS", "待审批",
+                "NEXT", "等待宿管审批，可在请假/晚归页面查看")
+                + "✅ 已为你提交" + type + "申请：\n"
                 + "事由：" + reason + "\n"
                 + "时间：" + start.format(DTF) + " ~ " + end.format(DTF) + "\n"
                 + "当前状态：待审批，请等待宿管审批。";
@@ -364,6 +383,20 @@ public class AiAssistantService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private String actionMeta(String type, String... kv) {
+        StringBuilder sb = new StringBuilder("@@AI_ACTION\n");
+        sb.append("TYPE=").append(type).append("\n");
+        for (int i = 0; i + 1 < kv.length; i += 2) {
+            sb.append(kv[i]).append("=").append(cleanMeta(kv[i + 1])).append("\n");
+        }
+        sb.append("@@END_AI_ACTION\n\n");
+        return sb.toString();
+    }
+
+    private String cleanMeta(String value) {
+        return value == null ? "" : value.replace("\r", " ").replace("\n", " ").trim();
     }
 
     /** 记录动作类对话日志并返回回复 */
